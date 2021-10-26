@@ -46,13 +46,7 @@ func (a *App) HandlerFILE(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.errorLog.Fatal(err) //error handling
 	}
-/*
-	headersJson, err := json.Marshal(headers)
-	if err != nil {
-		a.errorLog.Fatal(err) //error handling
-	}
-*/
-	//how file in response Body ?????
+
 	File, err := forfile.GetOpenFile(FN)
 	if err != nil {
 		a.errorLog.Fatal(err) //error handling
@@ -90,12 +84,27 @@ func (a *App) HandlerPOST(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if *flag == true {
-		forfile.DeleteOldFile(FN)
+
+		err := forfile.DeleteOldFile(FN)
+		if err != nil {
+			a.errorLog.Fatal(err) //error handling
+		}
+
 		database.UpdateDb(CT, CL, FN, a.Db)
-		forfile.SaveNewFile(FN, file)
+
+		err = forfile.SaveNewFile(FN, file)
+		if err != nil {
+			a.errorLog.Fatal(err) //error handling
+		}
+
 	} else {
+
 		database.PostFileDb(FN, CT, CL, a.Db)
-		forfile.SaveNewFile(FN, file)
+
+		err := forfile.SaveNewFile(FN, file)
+		if err != nil {
+			 a.errorLog.Fatal(err) //error handling
+		}
 	}
 
 	response := "SUCCESSFUL SAVING OF THE FILE AND INFORMATION IN THE DATABASE!"

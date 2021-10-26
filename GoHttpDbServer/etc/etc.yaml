@@ -1,14 +1,14 @@
+---
 port: "8080"
-
 db:
     user: "alex"
     host: "localhost"
     port: "5432"
+    password: "12345"
     dbname: "dbforgolang"
     sslmode: "disable"
-
-pathopenfile: "home/ubuntu/infile/"
-
-pathsavefile: "home/ubuntu/infile/"
-
-pathdeletefile: "home/ubuntu/infile/"
+pathopenfile: "/home/ubuntu/infile/"
+pathsavefile: "/home/ubuntu/infile/"
+pathdeletefile: "/home/ubuntu/infile/"
+writetimeout: 15
+readtimeout: 15

@@ -17,10 +17,12 @@ type DB struct {
 }
 
 type Conf struct {
-	Host       string `yaml:"host"`
-	Port       string `yaml:"port"`
-	DB         DB     `yaml:"db"`
-	PathToFile string `yaml:"pathtofile"`
+	Host        string `yaml:"host"`
+	Port        string `yaml:"port"`
+	DB          DB     `yaml:"db"`
+	PathToFile  string `yaml:"pathtofile"`
+	KeyPassword string `yaml:"keypassword"`
+	KeyToken    string `yaml:"keytoken"`
 }
 
 func Get() (*Conf, error) {

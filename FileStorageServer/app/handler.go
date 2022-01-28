@@ -1,8 +1,8 @@
 package app
 
 import (
-	"FileStorageServer/filesoperation"
 	"FileStorageServer/database"
+	"FileStorageServer/filesoperation"
 
 	"github.com/sirupsen/logrus"
 
@@ -34,10 +34,10 @@ func (app *App) ListFileHeaders(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		//app.MyLogger.Fatal(err)
 		app.MyLogger.WithFields(logrus.Fields{
-			"func": "database.ListFilesHeaders",
+			"func":    "database.ListFilesHeaders",
 			"package": "app",
 		}).Info(err)
-		http.Error(w, http.StatusText(500), 500)
+		http.Error(w, "Error when accessing the database", 500)
 		return //error handling
 	}
 
@@ -73,7 +73,7 @@ func (app *App) GetFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			"func":    "database.GetFileHeaders",
 			"package": "app",
 		}).Info(err)
-		http.Error(w, http.StatusText(500), 500)
+		http.Error(w, "Error when accessing the database", 500)
 		return //error handling
 	}
 
@@ -83,7 +83,7 @@ func (app *App) GetFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			"func":    "filesoperation.Get",
 			"package": "app",
 		}).Info(err)
-		http.Error(w, http.StatusText(500), 500)
+		http.Error(w, "Error when interacting with files", 500)
 		return //error handling
 	}
 
@@ -100,9 +100,8 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 		app.MyLogger.WithFields(logrus.Fields{
 			"func":    "ReadAll(r.Body)",
 			"package": "app",
-			"msg": "Error when reading the request body",
 		}).Info(err)
-		http.Error(w, http.StatusText(500), 500)
+		http.Error(w, "Error when reading the request body", 500)
 		return //error handling
 	}
 	defer r.Body.Close()
@@ -123,7 +122,7 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			"func":    "database.CheckFileByName",
 			"package": "app",
 		}).Info(err)
-		http.Error(w, http.StatusText(500), 500)
+		http.Error(w, "Error when accessing the database", 500)
 		return //error handling
 	}
 
@@ -135,7 +134,7 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"func":    "filesoperation.DeleteOld",
 				"package": "app",
 			}).Info(err)
-			http.Error(w, http.StatusText(500), 500)
+			http.Error(w, "Error when interacting with files", 500)
 			return //error handling
 		}
 
@@ -145,7 +144,7 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"func":    "database.UpdateTable",
 				"package": "app",
 			}).Info(err)
-			http.Error(w, http.StatusText(500), 500)
+			http.Error(w, "Error when accessing the database", 500)
 			return //error handling
 		}
 
@@ -155,7 +154,7 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"func":    "filesoperation.SaveNew",
 				"package": "app",
 			}).Info(err)
-			http.Error(w, http.StatusText(500), 500)
+			http.Error(w, "Error when interacting with files", 500)
 			return //error handling
 		}
 
@@ -167,7 +166,7 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"func":    "database.PostFileHeaders",
 				"package": "app",
 			}).Info(err)
-			http.Error(w, http.StatusText(500), 500)
+			http.Error(w, "Error when accessing the database", 500)
 			return //error handling
 		}
 
@@ -177,11 +176,12 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"func":    "filesoperation.SaveNew",
 				"package": "app",
 			}).Info(err)
-			http.Error(w, http.StatusText(500), 500)
+			http.Error(w, "Error when interacting with files", 500)
 			return //error handling
 		}
 	}
 
+	w.WriteHeader(201)
 	response := "SUCCESSFUL SAVING OF THE FILE AND INFORMATION IN THE DATABASE!"
 	w.Write([]byte(response))
 }

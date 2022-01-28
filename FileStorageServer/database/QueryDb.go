@@ -1,18 +1,24 @@
 package database
 
 import (
-	"github.com/pkg/errors"
 	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 
 	"database/sql"
 )
 
 type HeadersTable struct {
-	FileName       string `json:"filename"`
+	FileName      string `json:"filename"`
 	ContentType   string `json:"content_type"`
 	ContentLength string `json:"content_lenght"`
-	ID             int    `json:"id"`
+	ID            int    `json:"id"`
 }
+
+type UserData struct {
+        Name     string `json:"user_name"`
+	HashPassword string `json:"user_password"`
+}
+
 
 func ListFilesHeaders(db *sql.DB, FN string) (*[]HeadersTable, error) {
 
@@ -96,6 +102,59 @@ func UpdateTable(db *sql.DB, CT, CL, FN string) error {
 	_, err := db.Exec("UPDATE headers SET content_type=$1, content_lenght=$2 WHERE filename=$3", CT, CL, FN)
 	if err != nil {
 		return errors.Wrap(err, "DB Query, func UpdateTable") //error handling
+	}
+
+	return nil
+}
+
+func CheckUserByName(db *sql.DB, Name string) (*bool, error) {
+
+	var flag bool
+
+	User := UserData{}
+
+	err := db.QueryRow("SELECT user_name FROM user_data WHERE user_name=$1", Name).Scan(&User.Name)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			flag = false
+			return &flag, nil
+		default:
+			return nil, errors.Wrap(err, "DB Query, func CheckUserByName") //error handling
+		}
+	}
+	flag = true
+	return &flag, nil
+}
+
+func CheckUserByNameAndPassword(db *sql.DB, Name string) (*bool, string, error) {
+
+	var flag bool
+
+	User := UserData{}
+
+	err := db.QueryRow("SELECT user_password FROM user_data WHERE user_name=$1", Name).Scan(&User.HashPassword)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			flag = false
+			return &flag, "", nil
+		default:
+			return nil, "", errors.Wrap(err, "DB Query, func CheckUserByName") //error handling
+		}
+	}
+
+	flag = true
+	return &flag, User.HashPassword, nil
+
+
+}
+
+func AddUserInDB(db *sql.DB, UserName, HashPassword string) error {
+
+	_, err := db.Exec("INSERT INTO user_data (user_name, user_password) VALUES ($1, $2)", UserName, HashPassword)
+	if err != nil {
+		return errors.Wrap(err, "DB Query, func AddUserInDB") //error handling
 	}
 
 	return nil

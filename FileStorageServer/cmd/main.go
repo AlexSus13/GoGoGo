@@ -3,6 +3,7 @@ package main
 import (
 	"FileStorageServer/app"
 	"FileStorageServer/config"
+	//"FileStorageServer/token"
 	"FileStorageServer/database"
 
 	"github.com/gorilla/mux"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	//"strings"
 	"syscall"
 	"time"
 )
@@ -52,13 +54,21 @@ func main() {
 	app := app.NewApp(db, MyLogger, config)
 
 	router := mux.NewRouter()
+	subrouter := router.PathPrefix("/api").Subrouter()
 
-	router.HandleFunc("/", app.Hello).Methods("GET")
-	router.HandleFunc("/listfiles", app.ListFileHeaders).Methods("GET")
-	router.HandleFunc("/postfile", app.SaveFileAndHeaders).Methods("POST")
-	router.HandleFunc("/getfile", app.GetFileAndHeaders).Methods("GET")
+	//app.CheckAuthMiddleware(subrouter, app.Config.KeyToken)
+	subrouter.Use(app.CheckAuthMiddleware)
 
-	MWrouter := LogMiddleware(router, MyLogger)
+	subrouter.HandleFunc("/", app.Hello).Methods("GET")
+	subrouter.HandleFunc("/listfiles", app.ListFileHeaders).Methods("GET")
+	subrouter.HandleFunc("/postfile", app.SaveFileAndHeaders).Methods("POST")
+	subrouter.HandleFunc("/getfile", app.GetFileAndHeaders).Methods("GET")
+
+	router.HandleFunc("/reg", app.SignUp).Methods("POST")
+	router.HandleFunc("/auth", app.SignIn).Methods("POST")
+
+	//MWrouter := router.Use(app.LogMiddleware)
+	MWrouter := app.LogMiddleware(router)
 
 	srv := &http.Server{
 		Addr:         config.Host + ":" + config.Port,
@@ -109,19 +119,4 @@ func main() {
 	}
 
 	cancel()
-}
-
-func LogMiddleware(next http.Handler, MyLogger *logrus.Logger) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		start := time.Now()
-
-		next.ServeHTTP(w, r)
-
-		MyLogger.WithFields(logrus.Fields{
-			"method":      r.Method,
-			"remote_addr": r.RemoteAddr,
-			"work_time":   time.Since(start),
-		}).Info(r.URL.Path)
-	})
 }

@@ -15,10 +15,9 @@ type HeadersTable struct {
 }
 
 type UserData struct {
-        Name     string `json:"user_name"`
+	Name         string `json:"user_name"`
 	HashPassword string `json:"user_password"`
 }
-
 
 func ListFilesHeaders(db *sql.DB, FN string) (*[]HeadersTable, error) {
 
@@ -146,7 +145,6 @@ func CheckUserByNameAndPassword(db *sql.DB, Name string) (*bool, string, error) 
 
 	flag = true
 	return &flag, User.HashPassword, nil
-
 
 }
 

@@ -23,7 +23,7 @@ func Get(path string, FN string) ([]byte, error) {
 	return data, nil
 }
 
-func SaveNew(path string, FN string, data []byte)  error {
+func SaveNew(path string, FN string, data []byte) error {
 
 	file, err := os.Create(path + FN)
 	if err != nil {

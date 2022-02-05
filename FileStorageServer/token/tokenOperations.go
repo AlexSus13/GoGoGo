@@ -10,10 +10,9 @@ import (
 type Claims struct {
 	UserName string
 	jwt.StandardClaims
-
 }
 
-func CreateToken(Name ,SecretKey string) (string, error){
+func CreateToken(Name, SecretKey string) (string, error) {
 
 	KeyToken := []byte(SecretKey)
 

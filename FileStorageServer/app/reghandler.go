@@ -7,18 +7,17 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"encoding/json"
+	"fmt"
 	"hash/crc32"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"fmt"
 )
 
 type UserData struct {
-	Name     string `json:"user_name"`
-	Password interface{} `json:"user_password"`//if password != string?
+	Name     string      `json:"user_name"`
+	Password interface{} `json:"user_password"` //if password != string?
 }
-
 
 var HashingPassword = func(Password interface{}, keyPassword string) string {
 	PasswordString := fmt.Sprintf("%v", Password)
@@ -88,7 +87,7 @@ func (app *App) SignUp(w http.ResponseWriter, r *http.Request) {
 			return //error handling
 		}
 
-		TokenString, err :=  token.CreateToken(UD.Name, app.Config.KeyToken)
+		TokenString, err := token.CreateToken(UD.Name, app.Config.KeyToken)
 		if err != nil {
 			app.MyLogger.WithFields(logrus.Fields{
 				"func":    "token.CreateToken in SignUp",
@@ -164,7 +163,7 @@ func (app *App) SignIn(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "INVALID PASSWORD", 400)
 		}
 
-		TokenString, err :=  token.CreateToken(UD.Name, app.Config.KeyToken)
+		TokenString, err := token.CreateToken(UD.Name, app.Config.KeyToken)
 		if err != nil {
 			app.MyLogger.WithFields(logrus.Fields{
 				"func":    "token.CreateToken in SignIn",

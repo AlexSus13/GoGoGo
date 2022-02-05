@@ -3,7 +3,6 @@ package main
 import (
 	"FileStorageServer/app"
 	"FileStorageServer/config"
-	//"FileStorageServer/token"
 	"FileStorageServer/database"
 
 	"github.com/gorilla/mux"
@@ -14,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	//"strings"
 	"syscall"
 	"time"
 )
@@ -56,18 +54,16 @@ func main() {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api").Subrouter()
 
-	//app.CheckAuthMiddleware(subrouter, app.Config.KeyToken)
 	subrouter.Use(app.CheckAuthMiddleware)
 
-	subrouter.HandleFunc("/", app.Hello).Methods("GET")
 	subrouter.HandleFunc("/listfiles", app.ListFileHeaders).Methods("GET")
 	subrouter.HandleFunc("/postfile", app.SaveFileAndHeaders).Methods("POST")
 	subrouter.HandleFunc("/getfile", app.GetFileAndHeaders).Methods("GET")
 
+	router.HandleFunc("/", app.Hello).Methods("GET")
 	router.HandleFunc("/reg", app.SignUp).Methods("POST")
 	router.HandleFunc("/auth", app.SignIn).Methods("POST")
 
-	//MWrouter := router.Use(app.LogMiddleware)
 	MWrouter := app.LogMiddleware(router)
 
 	srv := &http.Server{

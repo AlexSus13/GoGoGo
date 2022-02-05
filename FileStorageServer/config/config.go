@@ -29,7 +29,8 @@ func Get() (*Conf, error) {
 
 	var dconf Conf
 
-	yamlFile, err := ioutil.ReadFile("/home/ubuntu/HttpServer/GoGoGo/FileStorageServer/etc/etc.yaml")
+	//yamlFile, err := ioutil.ReadFile("/home/ubuntu/HttpServer/GoGoGo/FileStorageServer/etc/etc.yaml")
+	yamlFile, err := ioutil.ReadFile("/appserv/etc/etc.yaml")
 	if err != nil {
 		return nil, errors.Wrap(err, "Read .yaml File, func Get") //error handling
 	}

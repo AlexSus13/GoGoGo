@@ -17,7 +17,8 @@ func (app *App) Hello(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	w.Write([]byte("Hello, this is the start page of the server"))
+
+	w.Write([]byte("Hello, this is the start page of the server, for information on interacting with the server see the README.md"))
 }
 
 func (app *App) ListFileHeaders(w http.ResponseWriter, r *http.Request) {

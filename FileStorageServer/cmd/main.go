@@ -56,11 +56,11 @@ func main() {
 
 	subrouter.Use(app.CheckAuthMiddleware)
 
-	subrouter.HandleFunc("/", app.Hello).Methods("GET")
 	subrouter.HandleFunc("/listfiles", app.ListFileHeaders).Methods("GET")
 	subrouter.HandleFunc("/postfile", app.SaveFileAndHeaders).Methods("POST")
 	subrouter.HandleFunc("/getfile", app.GetFileAndHeaders).Methods("GET")
 
+	router.HandleFunc("/", app.Hello).Methods("GET")
 	router.HandleFunc("/reg", app.SignUp).Methods("POST")
 	router.HandleFunc("/auth", app.SignIn).Methods("POST")
 

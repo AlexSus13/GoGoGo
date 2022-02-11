@@ -26,13 +26,14 @@ func main() {
 		PrettyPrint:      true,
 	}
 
-	config, err := config.Get()
+	config := config.Get()
+	/*config, err := config.Get()
 	if err != nil {
 		MyLogger.WithFields(logrus.Fields{
 			"func":    "config.Get",
 			"package": "main",
 		}).Fatal(err) //error handling
-	}
+	}*/
 
 	db, err := database.NewPostgresDB(database.Config{
 		User:     config.DB.User,

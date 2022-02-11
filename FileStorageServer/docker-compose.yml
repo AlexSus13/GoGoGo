@@ -1,0 +1,31 @@
+version: '3'
+services:
+  server:
+    container_name: filestorageserver
+    build: .
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - mypostgresdb          
+
+  mypostgresdb:
+    container_name: mypostgresdb
+    build: ./database
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}  
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - Sslmode_DB=${Sslmode_DB}
+      - SERVER_HOST=${SERVER_HOST}
+      - SERVER_PORT=${SERVER_PORT}
+      - PATHTOFILE=${PATHTOFILE}
+      - KEYPASSWORD=${KEYPASSWORD}
+      - KEYTOKEN=${KEYTOKEN} 
+    ports:
+      - "5433:5432"
+    volumes:
+      - /home/ubuntu/HttpServer/DATEforDBpostgresql:/var/lib/postgresql/data
+    env_file:
+      - .env

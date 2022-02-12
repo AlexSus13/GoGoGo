@@ -1,18 +1,10 @@
 version: '3'
 services:
-  server:
-    container_name: filestorageserver
+  filestorageserver:
+    container_name: server
     build: .
-    ports: 
-      - "8080:8080"
-    depends_on:
-      - mypostgresdb          
-
-  mypostgresdb:
-    container_name: mypostgresdb
-    build: ./database
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}  
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
@@ -20,9 +12,25 @@ services:
       - Sslmode_DB=${Sslmode_DB}
       - SERVER_HOST=${SERVER_HOST}
       - SERVER_PORT=${SERVER_PORT}
-      - PATHTOFILE=${PATHTOFILE}
+      - PATHTOSAVEFILE=${PATHTOSAVEFILE}
       - KEYPASSWORD=${KEYPASSWORD}
-      - KEYTOKEN=${KEYTOKEN} 
+      - KEYTOKEN=${KEYTOKEN}
+    ports: 
+      - "8080:8080"
+    volumes:
+      - /home/ubuntu/HttpServer/GoGoGo/FileStorageServer/SavedFiles:/appserv/${PATHTOSAVEFILE}
+    env_file:
+      - .env
+    depends_on:
+      - mydockerdb          
+
+  mydockerdb:
+    container_name: mydockerdb
+    build: ./database
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}  
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5433:5432"
     volumes:

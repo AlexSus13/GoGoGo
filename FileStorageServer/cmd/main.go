@@ -27,18 +27,19 @@ func main() {
 	}
 
 	config := config.Get()
-	/*config, err := config.Get()
+
+	err := os.MkdirAll(config.PathToFile, 0777)
 	if err != nil {
 		MyLogger.WithFields(logrus.Fields{
-			"func":    "config.Get",
+			"func":    "os.MkdirAll",
 			"package": "main",
 		}).Fatal(err) //error handling
-	}*/
+	}
 
 	db, err := database.NewPostgresDB(database.Config{
 		User:     config.DB.User,
 		Host:     config.DB.Host,
-		Password: config.DB.Password, //os.Getenv("DB_PASSWORD"),
+		Password: config.DB.Password,
 		Port:     config.DB.Port,
 		DBName:   config.DB.Dbname,
 		SSLMode:  config.DB.Sslmode,

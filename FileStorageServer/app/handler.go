@@ -139,6 +139,16 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			return //error handling
 		}
 
+		err = filesoperation.SaveNew(app.Config.PathToFile, FN, FileContents)
+		if err != nil {
+			app.MyLogger.WithFields(logrus.Fields{
+				"func":    "filesoperation.SaveNew",
+				"package": "app",
+			}).Info(err)
+			http.Error(w, "Error when interacting with files", 500)
+			return //error handling
+		}
+
 		err = database.UpdateTable(app.Db, CT, CL, FN)
 		if err != nil {
 			app.MyLogger.WithFields(logrus.Fields{
@@ -149,6 +159,8 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			return //error handling
 		}
 
+	} else {
+
 		err = filesoperation.SaveNew(app.Config.PathToFile, FN, FileContents)
 		if err != nil {
 			app.MyLogger.WithFields(logrus.Fields{
@@ -158,8 +170,6 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error when interacting with files", 500)
 			return //error handling
 		}
-
-	} else {
 
 		err := database.PostFileHeaders(app.Db, FN, CT, CL)
 		if err != nil {
@@ -168,16 +178,6 @@ func (app *App) SaveFileAndHeaders(w http.ResponseWriter, r *http.Request) {
 				"package": "app",
 			}).Info(err)
 			http.Error(w, "Error when accessing the database", 500)
-			return //error handling
-		}
-
-		err = filesoperation.SaveNew(app.Config.PathToFile, FN, FileContents)
-		if err != nil {
-			app.MyLogger.WithFields(logrus.Fields{
-				"func":    "filesoperation.SaveNew",
-				"package": "app",
-			}).Info(err)
-			http.Error(w, "Error when interacting with files", 500)
 			return //error handling
 		}
 	}
